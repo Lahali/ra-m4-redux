@@ -17,6 +17,9 @@ const initialState = {
     city: '',
     type: '',
   },
+  page: {
+    firstPage: 9,
+  },
 }
 
 const housesSlice = createSlice({
@@ -49,5 +52,6 @@ const housesSlice = createSlice({
   },
 })
 
-export const { setHousesTypeFilter, setHousesCityFilter } = housesSlice.actions
+export const { setHousesTypeFilter, setHousesCityFilter, setPage } =
+  housesSlice.actions
 export default housesSlice.reducer
