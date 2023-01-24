@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
 import { main } from '../../constants'
 
@@ -15,6 +16,18 @@ const MainMenuStyled = styled.ul`
       margin-left: 0;
     }
   }
+
+  a {
+    text-decoration: none;
+    &:hover {
+      font-weight: bold;
+    }
+  }
+`
+const NavLinkStyled = styled(NavLink)`
+  &.active {
+    font-weight: bold;
+  }
 `
 
 function MainMenu() {
@@ -22,7 +35,7 @@ function MainMenu() {
     <MainMenuStyled>
       {Object.values(main).map(({ path, label }) => (
         <li key={path}>
-          <a href={path}>{label}</a>
+          <NavLinkStyled to={path}>{label}</NavLinkStyled>
         </li>
       ))}
     </MainMenuStyled>

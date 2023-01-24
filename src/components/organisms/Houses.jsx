@@ -24,7 +24,6 @@ const filteredHouses = (house, type, city) =>
   byCity(house, city) && byType(house, type)
 
 function Houses() {
-  // const [houses, setHouses] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const { loading, isError, isSuccess } = useFetch(urls.houses)
 
@@ -33,6 +32,7 @@ function Houses() {
   const { allIds, byId } = houses
   const houseFilter = useSelector((state) => state.houses.housesFilter)
   const { type, city } = houseFilter
+  const itemsFirstPage = 9
 
   useEffect(() => {
     dispatch(getHouses())
@@ -45,6 +45,7 @@ function Houses() {
       {isSuccess && (
         <Grid gridGap="32px">
           {allIds
+            .slice(0, itemsFirstPage * currentPage)
             .filter((id) => filteredHouses(byId[id], type, city))
             .map((id) => (
               <HouseCard
