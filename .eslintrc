@@ -8,6 +8,7 @@
     "react/prop-types": "warn",
     "react/require-default-props": "off",
     "react/react-in-jsx-scope": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "no-param-reassign": ["error", { "props": false }] 
   }
 }

@@ -1,6 +1,11 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { colors, Container, dimensions, FlexBox } from '../../styles'
+import {
+  setHousesTypeFilter,
+  setHousesCityFilter,
+} from '../../store/house.slice'
 import { Button, Icon } from '../atoms'
 import { SelectGroup } from '../molecules'
 
@@ -27,11 +32,20 @@ const FormStyled = styled(FlexBox).attrs({ as: 'form' })`
 `
 
 function SubHeader({ ...props }) {
+  const dispatch = useDispatch()
+  const filterByType = (e) => {
+    dispatch(setHousesTypeFilter(e.target.value))
+  }
+  const filterByCity = (e) => {
+    dispatch(setHousesCityFilter(e.target.value))
+  }
+
   return (
     <SubHeaderStyled {...props}>
       <Container>
         <FormStyled direction="row" align="center">
           <SelectGroup
+            onChange={filterByType}
             id="type"
             label="Tipo"
             defaultText="Piso, chalet o garaje..."
@@ -44,6 +58,7 @@ function SubHeader({ ...props }) {
           />
 
           <SelectGroup
+            onChange={filterByCity}
             id="ciudad"
             label="Ciudad"
             defaultText="Madrid, Barcelona o Zaragoza..."
