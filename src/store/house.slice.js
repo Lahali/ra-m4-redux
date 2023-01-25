@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { urls } from '../constants'
 
+// Aquí hay que pasar la paginación
 export const getHouses = createAsyncThunk('houses/getHouses', async () => {
   const res = await fetch(urls.houses)
   const data = await res.json()
@@ -8,7 +9,7 @@ export const getHouses = createAsyncThunk('houses/getHouses', async () => {
 })
 
 const initialState = {
-  reqStatus: 'initial',
+  reqStatus: 'initial', // Añade isError, isLoading, isSuccess para facilitar el manejo
   houses: {
     byId: {},
     allIds: [],
@@ -18,7 +19,7 @@ const initialState = {
     type: '',
   },
   page: {
-    firstPage: 9,
+    firstPage: 9, // Debería estar en una constante y pasarse a la función asincrona en el thunk como parámetro
   },
 }
 
