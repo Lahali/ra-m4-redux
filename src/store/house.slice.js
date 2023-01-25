@@ -2,14 +2,21 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { urls } from '../constants'
 
 // Aquí hay que pasar la paginación
-export const getHouses = createAsyncThunk('houses/getHouses', async () => {
-  const res = await fetch(urls.houses)
-  const data = await res.json()
-  return data
-})
+export const getHouses = createAsyncThunk(
+  'houses/getHouses',
+  async (options = { page: 1, max: 9 }) => {
+    const { page, max } = options
+    const res = await fetch(`${urls.houses}?_page=${page}&_limit=${max}`)
+    const data = await res.json()
+    return data
+  },
+)
 
 const initialState = {
-  reqStatus: 'initial', // Añade isError, isLoading, isSuccess para facilitar el manejo
+  reqStatus: 'initial',
+  isLoading: false,
+  isSuccess: false,
+  isError: false,
   houses: {
     byId: {},
     allIds: [],
@@ -17,9 +24,6 @@ const initialState = {
   housesFilter: {
     city: '',
     type: '',
-  },
-  page: {
-    firstPage: 9, // Debería estar en una constante y pasarse a la función asincrona en el thunk como parámetro
   },
 }
 
@@ -37,9 +41,15 @@ const housesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getHouses.pending, (state) => {
       state.reqStatus = 'loading'
+      state.isLoading = true
+      state.isSuccess = false
+      state.isError = false
     })
     builder.addCase(getHouses.fulfilled, (state, action) => {
       state.reqStatus = 'success'
+      state.isLoading = false
+      state.isSuccess = true
+      state.isError = false
       action.payload.forEach((house) => {
         state.houses.byId[house.id] = house
         if (!state.houses.allIds.includes(house.id)) {
@@ -49,6 +59,9 @@ const housesSlice = createSlice({
     })
     builder.addCase(getHouses.rejected, (state) => {
       state.reqStatus = 'failed'
+      state.isLoading = false
+      state.isSuccess = false
+      state.isError = true
     })
   },
 })

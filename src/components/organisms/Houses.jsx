@@ -3,9 +3,7 @@ import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from '../atoms'
 import { HouseCard } from '../molecules'
-import { useFetch } from '../../hooks'
 import { FlexBox, Grid } from '../../styles'
-import { urls } from '../../constants'
 import { getHouses } from '../../store/house.slice'
 
 const HousesStyled = styled(FlexBox)``
@@ -25,28 +23,25 @@ const filteredHouses = (house, type, city) =>
 
 function Houses() {
   const [currentPage, setCurrentPage] = useState(1)
-  const { loading, isError, isSuccess } = useFetch(urls.houses) // Usa redux, no el fetch
-
+  const { isLoading, isSuccess, isError } = useSelector((state) => state.houses)
   const dispatch = useDispatch()
   const houses = useSelector((state) => state.houses.houses)
   const { allIds, byId } = houses
   const houseFilter = useSelector((state) => state.houses.housesFilter)
   const { type, city } = houseFilter
-  const changePage = useSelector((state) => state.houses.page) // no es necesario
-  const { firstPage } = changePage // no es necesario
+  const maxHouses = 9
 
   useEffect(() => {
-    dispatch(getHouses())
-  }, [dispatch])
+    dispatch(getHouses({ page: currentPage, max: maxHouses }))
+  }, [dispatch, currentPage])
 
   return (
     <HousesStyled>
-      {loading && <div>Loading...</div>}
+      {isLoading && <div>Loading...</div>}
       {isError && <div>Error</div>}
       {isSuccess && (
         <Grid gridGap="32px">
           {allIds
-            .slice(0, firstPage * currentPage) // no deberías de descargar los datos y luego "cortarlos", sino pedir los datos necesarios a la API
             .filter((id) => filteredHouses(byId[id], type, city))
             .map((id) => (
               <HouseCard
@@ -60,12 +55,14 @@ function Houses() {
         </Grid>
       )}
       <FlexBox align="center">
-        <Button
-          style={{ marginTop: '2rem' }}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Load more
-        </Button>
+        {allIds.length >= maxHouses && (
+          <Button
+            style={{ marginTop: '2rem' }}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            Load more
+          </Button>
+        )}
       </FlexBox>
     </HousesStyled>
   )
