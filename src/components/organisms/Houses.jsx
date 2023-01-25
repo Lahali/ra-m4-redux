@@ -25,15 +25,15 @@ const filteredHouses = (house, type, city) =>
 
 function Houses() {
   const [currentPage, setCurrentPage] = useState(1)
-  const { loading, isError, isSuccess } = useFetch(urls.houses)
+  const { loading, isError, isSuccess } = useFetch(urls.houses) // Usa redux, no el fetch
 
   const dispatch = useDispatch()
   const houses = useSelector((state) => state.houses.houses)
   const { allIds, byId } = houses
   const houseFilter = useSelector((state) => state.houses.housesFilter)
   const { type, city } = houseFilter
-  const changePage = useSelector((state) => state.houses.page)
-  const { firstPage } = changePage
+  const changePage = useSelector((state) => state.houses.page) // no es necesario
+  const { firstPage } = changePage // no es necesario
 
   useEffect(() => {
     dispatch(getHouses())
@@ -46,7 +46,7 @@ function Houses() {
       {isSuccess && (
         <Grid gridGap="32px">
           {allIds
-            .slice(0, firstPage * currentPage)
+            .slice(0, firstPage * currentPage) // no deberías de descargar los datos y luego "cortarlos", sino pedir los datos necesarios a la API
             .filter((id) => filteredHouses(byId[id], type, city))
             .map((id) => (
               <HouseCard
